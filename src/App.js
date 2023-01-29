@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Searchbar from "./Components/Searchbar";
+import Image from "./Components/Image";
 
 function App() {
+  const [images, setimages] = React.useState([]);
+  const [serchvlue, setsearchvalue] = React.useState('cats')
+
+  React.useEffect(()=> {
+    fetch(`https://pixabay.com/api/?key=${process.env.REACT_APP_PIXABAY_API_KEY}&q=${serchvlue}&image_type=photo`)
+    .then(res => res.json())
+    .then(res => setimages(res.hits))
+  }, [serchvlue])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <nav>
+        <h1>PHOTO GALLERY</h1>
+      </nav>
+      <Searchbar controlsearchvalue={(input) => setsearchvalue(input)} />
+      <div className="img-container">
+        {images.length === 0 ? 'Sorry no photos found!!' : images.map((img) => <Image key={img.id} img={img} />)}
+      </div>
+    </>
   );
 }
 
